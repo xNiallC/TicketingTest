@@ -5,9 +5,8 @@ require 'connection.php';
 $connection = Connect();
 $name = $connection->real_escape_string($_POST['ticketName']);
 $content = $connection->real_escape_string($_POST['ticketContent']);
-$date = $connection->real_escape_string($_POST['ticketDate']);
 
-$query = "INSERT into Tickets (Name,Content,Date) VALUES('" . $name . "','" . $content . "','" . $date . "')";
+$query = "INSERT into Tickets (Name,Content,Date) VALUES('$name','$content',sysdate)";
 $success = $connection->query($query);
 
 if(!$success) {

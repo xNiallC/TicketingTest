@@ -1,14 +1,15 @@
 <?php
- require 'connect.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+require 'connect.php';
 
  if(isset($_POST['ticketInput'])) {
    $connection = Connect();
    $name = $connection->real_escape_string($_POST['ticketName']);
    $title = $connection->real_escape_string($_POST['ticketTitle']);
    $content = $connection->real_escape_string($_POST['ticketContent']);
-   $date = $connection->real_escape_string($_POST['ticketDate']);
 
-   $query = "INSERT into Tickets (Name,Title,Content,Date) VALUES('" . $name . "','" . $title . "','" . $content . "','" . $date . "')";
+   $query = "INSERT into Tickets (Name,Title,Content,Date) VALUES('$name','$title','$content',sysdate)";
    $success = $connection->query($query);
 
    if(!$success) {
@@ -63,23 +64,6 @@
     <input type="text" name="ticketTitle" required /><br />
     Content:
     <input type="text" name="ticketContent" required /><br />
-
-    <!-- Hidden date input. Automatically inputs today's date using some JS stuff -->
-    <input type="hidden" name="ticketDate" id="todayDate"/><br />
-    <script>
-      // JS has a date function, we use to submit the date
-      function getDate() {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm}
-        today = yyyy+""+mm+""+dd;
-        document.getElementById("todayDate").value = today;
-      }
-      //call getDate() when loading the page
-      getDate();
-    </script>
   </form>
 
   <button type="submit" form="ticketInput" value="Submit Ticket" name="ticketInput">Submit Ticket</button>
