@@ -4,10 +4,11 @@
  if(isset($_POST['ticketInput'])) {
    $connection = Connect();
    $name = $connection->real_escape_string($_POST['ticketName']);
+   $title = $connection->real_escape_string($_POST['ticketTitle']);
    $content = $connection->real_escape_string($_POST['ticketContent']);
    $date = $connection->real_escape_string($_POST['ticketDate']);
 
-   $query = "INSERT into Tickets (Name,Content,Date) VALUES('" . $name . "','" . $content . "','" . $date . "')";
+   $query = "INSERT into Tickets (Name,Title,Content,Date) VALUES('" . $name . "','" . $title . "','" . $content . "','" . $date . "')";
    $success = $connection->query($query);
 
    if(!$success) {
@@ -51,12 +52,14 @@
 <body>
   <?php
     $connection = Connect();
-    $sql = "SELECT TicketID, Name, Content, Date from Tickets";
+    $sql = "SELECT TicketID, Name, Title, Content, Date from Tickets";
     $result = $connection->query($sql);
   ?>
   <form action="" method="post" id="ticketInput">
     Name:
     <input type="text" name="ticketName" required /><br />
+    Title:
+    <input type="text" name="ticketTitle" required /><br />
     Content:
     <input type="text" name="ticketContent" required /><br />
     Date:
@@ -68,10 +71,30 @@
   <br /><br />
   <?php
   if ($result->num_rows > 0) {
-    echo "<table><tr><th>ID</th><th>Name</th><th>Content</th><th>Date</th></tr>";
+    echo "<table><tr><th>ID</th><th>Name</th><th>Title</th><th>Date</th><th>Expand Content</th></tr>";
 
     while($row = $result->fetch_assoc()) {
-      echo "<tr><td>".$row["TicketID"]."</td><td>".$row["Name"]."</td><td>".$row["Content"]."</td><td>".$row["Date"]."</td></tr>";
+      ?>
+      <tr>
+        <td>
+          <?php echo $row["TicketID"]; ?>
+        </td>
+        <td>
+          <?php echo $row["Name"]; ?>
+        </td>
+        <td>
+          <?php echo $row["Title"]; ?>
+        </td>
+        <td>
+          <?php echo $row["Date"]; ?>
+        </td>
+        <td>
+          <!-- Create button with an ID that is specific to the row in the database, and call our expand content function with this -->
+          <button onclick="expandContent('ticket<?php echo $row["TicketID"]; ?>Content')">Expand Content</button>
+          <div id="ticket<?php echo $row["TicketID"]; ?>Content"><?php echo $row["Content"]; ?></div>
+        </td>
+      </tr>
+      <?php
     }
 
     echo "</table>";
@@ -84,6 +107,16 @@
     <input type="number" name="ticketIDToDelete" required /><br />
   </form>
   <button type="submit" form="ticketDelete" value="Delete Ticket" name="ticketDelete">Delete Ticket</button>
-
 </body>
+<script>
+  // Simple function to expand a specific ticket
+  function expandContent(elementID) {
+    var x = document.getElementById(elementID);
+    if(x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+</script>
 </html>
