@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-require 'connect.php';
+require 'scripts/connect.php';
 
  if(isset($_POST['ticketInput'])) {
    $connection = Connect();
