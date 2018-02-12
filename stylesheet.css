@@ -1,0 +1,9 @@
+td > div {
+  display: none;
+}
+#allTickets {
+  border-collapse: collapse;
+}
+#allTickets, #allTickets th, #allTickets #regularTableElement {
+  border: 1px solid black;
+}

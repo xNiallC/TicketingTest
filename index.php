@@ -48,6 +48,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Ticket Test</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
   </head>
 <body>
   <?php
@@ -62,8 +63,23 @@
     <input type="text" name="ticketTitle" required /><br />
     Content:
     <input type="text" name="ticketContent" required /><br />
-    Date:
-    <input type="date" name="ticketDate" required /><br />
+
+    <!-- Hidden date input. Automatically inputs today's date using some JS stuff -->
+    <input type="hidden" name="ticketDate" id="todayDate"/><br />
+    <script>
+      // JS has a date function, we use to submit the date
+      function getDate() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm}
+        today = yyyy+""+mm+""+dd;
+        document.getElementById("todayDate").value = today;
+      }
+      //call getDate() when loading the page
+      getDate();
+    </script>
   </form>
 
   <button type="submit" form="ticketInput" value="Submit Ticket" name="ticketInput">Submit Ticket</button>
@@ -71,28 +87,30 @@
   <br /><br />
   <?php
   if ($result->num_rows > 0) {
-    echo "<table><tr><th>ID</th><th>Name</th><th>Title</th><th>Date</th><th>Expand Content</th></tr>";
+    echo "<table id='allTickets'><tr><th>ID</th><th>Name</th><th>Title</th><th>Date</th><th>Expand Content</th></tr>";
 
     while($row = $result->fetch_assoc()) {
       ?>
       <tr>
-        <td>
+        <td id="regularTableElement">
           <?php echo $row["TicketID"]; ?>
         </td>
-        <td>
+        <td id="regularTableElement">
           <?php echo $row["Name"]; ?>
         </td>
-        <td>
+        <td id="regularTableElement">
           <?php echo $row["Title"]; ?>
         </td>
-        <td>
+        <td id="regularTableElement">
           <?php echo $row["Date"]; ?>
         </td>
-        <td>
+        <td id="regularTableElement">
           <!-- Create button with an ID that is specific to the row in the database, and call our expand content function with this -->
           <button onclick="expandContent('ticket<?php echo $row["TicketID"]; ?>Content')">Expand Content</button>
-          <div id="ticket<?php echo $row["TicketID"]; ?>Content"><?php echo $row["Content"]; ?></div>
         </td>
+        <tr><td colspan="5">
+          <div id="ticket<?php echo $row["TicketID"]; ?>Content"><?php echo $row["Content"]; ?></div>
+        </td></tr>
       </tr>
       <?php
     }
